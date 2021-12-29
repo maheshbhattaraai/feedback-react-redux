@@ -5,6 +5,9 @@ import App from './App';
 import store from './app/store';
 import './index.css';
 
+store.subscribe(() => {
+    console.log(store.getState().feedback)
+})
 
 ReactDOM.render(
     <React.StrictMode>

@@ -8,6 +8,8 @@ function RatingSelected({ select }) {
   useEffect(() => {
     if (editFeedBack) {
       setSelected(editFeedBack.rating);
+    } else {
+      setSelected("");
     }
   }, [editFeedBack]);
 

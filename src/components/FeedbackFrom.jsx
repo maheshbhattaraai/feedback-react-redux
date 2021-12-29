@@ -5,16 +5,26 @@ import Button from "./shared/Button";
 import RatingSelected from "./RatingSelected";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { addFeedback, updateFeedBack } from "../slice/feedback/feedbackslice";
+import {
+  addFeedback,
+  getFeedBack,
+  updateFeedback,
+} from "../slice/feedback/feedbackslice";
 
 function FeedbackFrom({ handleAdd }) {
   const dispatch = useDispatch();
   const editMode = useSelector((state) => state.feedback.editMode);
   const edit = useSelector((state) => state.feedback.edit);
+  const feedback = useSelector((state) => state.feedback);
+  // const [editMode, edit] = useSelector((state) => state.feedback);
   const [text, setText] = useState("");
   const [rating, setRating] = useState(10);
   const [btnDisabled, setBtnDisabled] = useState(true);
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    dispatch(getFeedBack());
+  }, []);
 
   useEffect(() => {
     if (editMode) {
@@ -22,9 +32,11 @@ function FeedbackFrom({ handleAdd }) {
       setRating(edit.rating);
       setText(edit.text);
     } else {
+      setRating("");
+      setText("");
       setBtnDisabled(true);
     }
-  }, [editMode]);
+  }, [editMode, edit]);
 
   const handleTextChange = (e) => {
     setText(e.target.value);
@@ -49,13 +61,12 @@ function FeedbackFrom({ handleAdd }) {
       };
 
       // dispatch(addFeedback(newFeedback));
-      if (editMode)
-        dispatch(updateFeedBack({ id: edit.id, item: newFeedback }));
-      else {
-        newFeedback.id = uidv4();
-        dispatch(addFeedback(newFeedback));
-      }
+      if (editMode) {
+        newFeedback.id = edit.id;
+        dispatch(updateFeedback(newFeedback));
+      } else dispatch(addFeedback(newFeedback));
       // handleAdd(newFeedback);
+      setBtnDisabled(true);
       setText("");
     }
   };
@@ -73,7 +84,7 @@ function FeedbackFrom({ handleAdd }) {
             value={text}
           />
           <Button type="submit" isDisabled={btnDisabled}>
-            Send
+            {feedback.submitLoading ? "Submitting" : "Send"}
           </Button>
         </div>
         {message && <div className="message">{message}</div>}

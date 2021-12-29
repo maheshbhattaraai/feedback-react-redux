@@ -2,12 +2,17 @@ import FeedbackItem from "./FeedbackItem";
 import { motion, AnimatePresence } from "framer-motion";
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
+import Spinner from "./shared/Spinner";
 
 function FeedbackList({ feedback, handleDelete }) {
   const result = useSelector((state) => state.feedback);
-  if (!result.data || result.data.length === 0) {
+  if (result.getPending) {
+    return <Spinner />;
+  }
+  if ((!result.getPending && !result.data) || result.data.length === 0) {
     return <p>No Feedback yet</p>;
   }
+
   return (
     <div className="feedback-list">
       <AnimatePresence>

@@ -2,15 +2,16 @@ import Card from "./shared/Card";
 import PropTypes from "prop-types";
 import { FaTimes, FaEdit } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { removeFeedBack, editFeedBack } from "../slice/feedback/feedbackslice";
+import { removeFeedback, editFeedback } from "../slice/feedback/feedbackslice";
 
 export default function FeedbackItem({ item, handleDelete }) {
   const dispatch = useDispatch();
   const removeItem = (id) => {
-    dispatch(removeFeedBack(id));
+    if (window.confirm("Are you sure you want to delete the record?"))
+      dispatch(removeFeedback(id));
   };
   const editItem = (item) => {
-    dispatch(editFeedBack(item));
+    dispatch(editFeedback(item.id));
   };
   return (
     <Card>
